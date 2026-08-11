@@ -11,6 +11,7 @@ import (
 	config "gitlab.cept.gov.in/it-2.0-common/api-config"
 	bootstrapper "gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper"
 	dblib "gitlab.cept.gov.in/it-2.0-common/n-api-db"
+	log "gitlab.cept.gov.in/it-2.0-common/n-api-log"
 	serverHandler "gitlab.cept.gov.in/it-2.0-common/n-api-server/handler"
 	otelsdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.uber.org/fx"
@@ -106,6 +107,7 @@ func AddHandler(constructor any) {
 
 func Insert(ctx context.Context, table string, req any) error {
 	if database == nil {
+		log.Error(ctx, "river: database not initialised; run NewRiver first")
 		return fmt.Errorf("river: database not initialised; run NewRiver first")
 	}
 
@@ -114,6 +116,7 @@ func Insert(ctx context.Context, table string, req any) error {
 		return err
 	}
 	if len(columns) == 0 {
+		log.Error(ctx, "river: no db-tagged fields found on %T", req)
 		return fmt.Errorf("river: no db-tagged fields found on %T", req)
 	}
 
@@ -128,11 +131,13 @@ func insertColumns(req any) ([]string, []any, error) {
 	v := reflect.ValueOf(req)
 	for v.Kind() == reflect.Pointer {
 		if v.IsNil() {
+			log.Error(context.Background(), "river: req is a nil pointer")
 			return nil, nil, fmt.Errorf("river: req is a nil pointer")
 		}
 		v = v.Elem()
 	}
 	if v.Kind() != reflect.Struct {
+		log.Error(context.Background(), "river: req must be a struct or pointer to struct, got %s", v.Kind())
 		return nil, nil, fmt.Errorf("river: req must be a struct or pointer to struct, got %s", v.Kind())
 	}
 
