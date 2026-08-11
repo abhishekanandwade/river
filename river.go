@@ -5,15 +5,18 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
+	"github.com/VictoriaMetrics/metrics"
+	config "gitlab.cept.gov.in/it-2.0-common/api-config"
 	bootstrapper "gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper"
 	dblib "gitlab.cept.gov.in/it-2.0-common/n-api-db"
 	serverHandler "gitlab.cept.gov.in/it-2.0-common/n-api-server/handler"
+	otelsdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.uber.org/fx"
 )
 
 var handlers []any
-
 var database *dblib.DB
 
 func NewRiver() {
@@ -22,9 +25,75 @@ func NewRiver() {
 			"Handlermodule",
 			fx.Provide(handlers...),
 		),
-		fx.Populate(&database),
+		fxDatabase,
 	)
 	app.WithContext(context.Background()).Run()
+}
+
+var fxDatabase = fx.Module(
+	"river-database",
+	fx.Invoke(initDatabase),
+)
+
+type riverDBParams struct {
+	fx.In
+	Config     *config.Config
+	Osdktrace  *otelsdktrace.TracerProvider
+	MetricsSet *metrics.Set
+	LC         fx.Lifecycle
+}
+
+func initDatabase(p riverDBParams) error {
+	cfg := buildDBConfig(p.Config)
+
+	factory := dblib.NewDefaultDbFactory()
+	factory.SetCollectorName("river_db_collector")
+
+	conn, err := factory.CreateConnection(&cfg, p.Osdktrace, p.MetricsSet)
+	if err != nil {
+		return err
+	}
+	database = conn
+
+	p.LC.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			return conn.PingContext(ctx)
+		},
+		OnStop: func(ctx context.Context) error {
+			conn.Close()
+			return nil
+		},
+	})
+	return nil
+}
+
+func buildDBConfig(c *config.Config) dblib.DBConfig {
+	sslmode := "disable"
+	if c.Exists("db.sslmode") {
+		sslmode = c.GetString("db.sslmode")
+	}
+
+	var trace bool
+	if c.Exists("trace.enabled") {
+		trace = c.GetBool("trace.enabled")
+	}
+
+	return dblib.DBConfig{
+		DBUsername:        c.GetString("db.username"),
+		DBPassword:        c.GetString("db.password"),
+		DBHost:            c.GetString("db.host"),
+		DBPort:            c.GetString("db.port"),
+		DBDatabase:        c.GetString("db.database"),
+		Schema:            c.GetString("db.schema"),
+		MaxConns:          c.GetInt32("db.maxconns"),
+		MinConns:          c.GetInt32("db.minconns"),
+		MaxConnLifetime:   time.Duration(c.GetInt("db.maxconnlifetime")),
+		MaxConnIdleTime:   time.Duration(c.GetInt("db.maxconnidletime")),
+		HealthCheckPeriod: time.Duration(c.GetInt("db.healthcheckperiod")),
+		SSLMode:           sslmode,
+		Trace:             trace,
+		AppName:           c.AppName(),
+	}
 }
 
 func AddHandler(constructor any) {

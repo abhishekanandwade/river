@@ -3,9 +3,18 @@ module github.com/abhishekanandwade/river
 go 1.26.5
 
 require (
+	github.com/VictoriaMetrics/metrics v1.40.2
+	gitlab.cept.gov.in/it-2.0-common/api-config v0.0.17
+	gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper v0.0.19-0.20260811070301-06faac9f1cab
+	gitlab.cept.gov.in/it-2.0-common/n-api-db v0.0.7
+	gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.17
+	go.opentelemetry.io/otel/sdk v1.38.0
+	go.uber.org/fx v1.24.0
+)
+
+require (
 	github.com/Jeffail/gabs v1.4.0 // indirect
 	github.com/Masterminds/squirrel v1.5.4 // indirect
-	github.com/VictoriaMetrics/metrics v1.40.2 // indirect
 	github.com/arl/statsviz v0.7.3 // indirect
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.14.2 // indirect
@@ -94,32 +103,26 @@ require (
 	github.com/volatiletech/null/v9 v9.0.0 // indirect
 	github.com/woodsbury/decimal128 v1.3.0 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-authz v1.0.5 // indirect
-	gitlab.cept.gov.in/it-2.0-common/api-config v0.0.17 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-errors v1.0.10 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-fxhealth v0.0.1 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-healthcheck v0.0.1 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-log v1.1.5 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-trace v0.0.7 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-validation v1.1.8 // indirect
-	gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper v0.0.21 // indirect
-	gitlab.cept.gov.in/it-2.0-common/n-api-db v0.0.7 // indirect
 	gitlab.cept.gov.in/it-2.0-common/n-api-errors v0.0.4 // indirect
 	gitlab.cept.gov.in/it-2.0-common/n-api-log v0.0.1 // indirect
 	gitlab.cept.gov.in/it-2.0-common/n-api-metrics v0.0.1 // indirect
-	gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.17 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.38.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.34.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.34.0 // indirect
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.38.0 // indirect
 	go.opentelemetry.io/otel/metric v1.38.0 // indirect
-	go.opentelemetry.io/otel/sdk v1.38.0 // indirect
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	go.temporal.io/api v1.53.0 // indirect
 	go.temporal.io/sdk v1.37.0 // indirect
 	go.uber.org/dig v1.19.0 // indirect
-	go.uber.org/fx v1.24.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
