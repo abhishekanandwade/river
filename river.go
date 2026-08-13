@@ -2,23 +2,21 @@ package river
 
 import (
 	"context"
-	"fmt"
-	"reflect"
-	"strings"
 	"time"
 
 	"github.com/VictoriaMetrics/metrics"
 	config "gitlab.cept.gov.in/it-2.0-common/api-config"
 	bootstrapper "gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper"
 	dblib "gitlab.cept.gov.in/it-2.0-common/n-api-db"
-	log "gitlab.cept.gov.in/it-2.0-common/n-api-log"
 	serverHandler "gitlab.cept.gov.in/it-2.0-common/n-api-server/handler"
+	serverRoute "gitlab.cept.gov.in/it-2.0-common/n-api-server/route"
 	otelsdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.uber.org/fx"
+
+	"github.com/abhishekanandwade/river/internal/db"
 )
 
 var handlers []any
-var database *dblib.DB
 
 func NewRiver() {
 	app := bootstrapper.New().Options(
@@ -54,7 +52,12 @@ func initDatabase(p riverDBParams) error {
 	if err != nil {
 		return err
 	}
-	database = conn
+	db.Set(conn)
+
+	// Register the persistence implementation with the server library so routes
+	// that declare a table (via route.Route.Table) can insert without exposing
+	// the database connection to application code.
+	serverRoute.SetInserter(inserter{})
 
 	p.LC.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -105,60 +108,11 @@ func AddHandler(constructor any) {
 	))
 }
 
-func Insert(ctx context.Context, table string, req any) error {
-	if database == nil {
-		log.Error(ctx, "river: database not initialised; run NewRiver first")
-		return fmt.Errorf("river: database not initialised; run NewRiver first")
-	}
+// inserter adapts river's internal persistence to the server library's
+// route.Inserter interface. Routes that declare a table trigger this insert
+// automatically; application code never calls it directly.
+type inserter struct{}
 
-	columns, values, err := insertColumns(req)
-	if err != nil {
-		return err
-	}
-	if len(columns) == 0 {
-		log.Error(ctx, "river: no db-tagged fields found on %T", req)
-		return fmt.Errorf("river: no db-tagged fields found on %T", req)
-	}
-
-	query := dblib.Psql.Insert(table).Columns(columns...).Values(values...)
-	if _, err := dblib.Insert(ctx, database, query); err != nil {
-		return err
-	}
-	return nil
-}
-
-func insertColumns(req any) ([]string, []any, error) {
-	v := reflect.ValueOf(req)
-	for v.Kind() == reflect.Pointer {
-		if v.IsNil() {
-			log.Error(context.Background(), "river: req is a nil pointer")
-			return nil, nil, fmt.Errorf("river: req is a nil pointer")
-		}
-		v = v.Elem()
-	}
-	if v.Kind() != reflect.Struct {
-		log.Error(context.Background(), "river: req must be a struct or pointer to struct, got %s", v.Kind())
-		return nil, nil, fmt.Errorf("river: req must be a struct or pointer to struct, got %s", v.Kind())
-	}
-
-	t := v.Type()
-	columns := make([]string, 0, t.NumField())
-	values := make([]any, 0, t.NumField())
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		if !field.IsExported() {
-			continue
-		}
-		column := field.Tag.Get("db")
-		if idx := strings.IndexByte(column, ','); idx >= 0 {
-			column = column[:idx]
-		}
-		column = strings.TrimSpace(column)
-		if column == "" || column == "-" {
-			continue
-		}
-		columns = append(columns, column)
-		values = append(values, v.Field(i).Interface())
-	}
-	return columns, values, nil
+func (inserter) Insert(ctx context.Context, table string, req any) error {
+	return db.Insert(ctx, table, req)
 }
