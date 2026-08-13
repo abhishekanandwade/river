@@ -7,7 +7,7 @@ require (
 	gitlab.cept.gov.in/it-2.0-common/api-config v0.0.17
 	gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper v0.0.19-0.20260811070301-06faac9f1cab
 	gitlab.cept.gov.in/it-2.0-common/n-api-db v0.0.7
-	gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.17
+	gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.18-0.20260813122407-6a8df20aae02
 	go.opentelemetry.io/otel/sdk v1.38.0
 	go.uber.org/fx v1.24.0
 )
