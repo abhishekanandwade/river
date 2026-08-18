@@ -55,9 +55,9 @@ func initDatabase(p riverDBParams) error {
 	db.Set(conn)
 
 	// Register the persistence implementation with the server library so routes
-	// that declare a table (via route.Route.Table) can insert without exposing
-	// the database connection to application code.
-	serverRoute.SetInserter(inserter{})
+	// that declare a table (via route.Route.Table) can run insert/update/delete
+	// without exposing the database connection to application code.
+	serverRoute.SetPersister(persister{})
 
 	p.LC.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -108,11 +108,19 @@ func AddHandler(constructor any) {
 	))
 }
 
-// inserter adapts river's internal persistence to the server library's
-// route.Inserter interface. Routes that declare a table trigger this insert
-// automatically; application code never calls it directly.
-type inserter struct{}
+// persister adapts river's internal persistence to the server library's
+// route.Persister interface. Routes that declare a table trigger these
+// operations automatically; application code never calls them directly.
+type persister struct{}
 
-func (inserter) Insert(ctx context.Context, table string, req any) error {
+func (persister) Insert(ctx context.Context, table string, req any) error {
 	return db.Insert(ctx, table, req)
+}
+
+func (persister) Update(ctx context.Context, table string, req any) error {
+	return db.Update(ctx, table, req)
+}
+
+func (persister) Delete(ctx context.Context, table string, req any) error {
+	return db.Delete(ctx, table, req)
 }

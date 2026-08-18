@@ -3,10 +3,13 @@ module github.com/abhishekanandwade/river
 go 1.26.5
 
 require (
+	github.com/Masterminds/squirrel v1.5.4
 	github.com/VictoriaMetrics/metrics v1.40.2
+	github.com/jackc/pgx/v5 v5.7.6
 	gitlab.cept.gov.in/it-2.0-common/api-config v0.0.17
 	gitlab.cept.gov.in/it-2.0-common/n-api-bootstrapper v0.0.19-0.20260811070301-06faac9f1cab
 	gitlab.cept.gov.in/it-2.0-common/n-api-db v0.0.7
+	gitlab.cept.gov.in/it-2.0-common/n-api-log v0.0.1
 	gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.18-0.20260813122407-6a8df20aae02
 	go.opentelemetry.io/otel/sdk v1.38.0
 	go.uber.org/fx v1.24.0
@@ -14,7 +17,6 @@ require (
 
 require (
 	github.com/Jeffail/gabs v1.4.0 // indirect
-	github.com/Masterminds/squirrel v1.5.4 // indirect
 	github.com/arl/statsviz v0.7.3 // indirect
 	github.com/bytedance/gopkg v0.1.3 // indirect
 	github.com/bytedance/sonic v1.14.2 // indirect
@@ -51,7 +53,6 @@ require (
 	github.com/jackc/pgerrcode v0.0.0-20250907135507-afb5586c32a6 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.7.6 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -110,7 +111,6 @@ require (
 	gitlab.cept.gov.in/it-2.0-common/api-trace v0.0.7 // indirect
 	gitlab.cept.gov.in/it-2.0-common/api-validation v1.1.8 // indirect
 	gitlab.cept.gov.in/it-2.0-common/n-api-errors v0.0.4 // indirect
-	gitlab.cept.gov.in/it-2.0-common/n-api-log v0.0.1 // indirect
 	gitlab.cept.gov.in/it-2.0-common/n-api-metrics v0.0.1 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/otel v1.38.0 // indirect

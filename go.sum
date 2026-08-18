@@ -268,8 +268,6 @@ gitlab.cept.gov.in/it-2.0-common/n-api-log v0.0.1 h1:O4it0f3zrwqIEvZicnc9iP/BvRi
 gitlab.cept.gov.in/it-2.0-common/n-api-log v0.0.1/go.mod h1:y4hYzHYLVD+r+tUpcuC4uIkae2Rgcm5oTTOU0ZHTuHo=
 gitlab.cept.gov.in/it-2.0-common/n-api-metrics v0.0.1 h1:cG1PmdhU/WFAgIFLdQHzE0EV/ssrEPvUy7Zf8+sWfks=
 gitlab.cept.gov.in/it-2.0-common/n-api-metrics v0.0.1/go.mod h1:5NjxuyB70tzAcS37N8mqJoLmliSlvpLYb5t/zsTorJM=
-gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.17 h1:PaYVqieCPNNWgrOtezaD7NC01onwiNY1A3KesWG68Ic=
-gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.17/go.mod h1:UQlB/148YO2tfaGSSI2BzFfHiR27GTM6/JONI/D5ICw=
 gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.18-0.20260813122407-6a8df20aae02 h1:F/7mzqk1iQ+zLJX8PTeBVUalWBwUlQxAckIcV3fRPOE=
 gitlab.cept.gov.in/it-2.0-common/n-api-server v0.0.18-0.20260813122407-6a8df20aae02/go.mod h1:UQlB/148YO2tfaGSSI2BzFfHiR27GTM6/JONI/D5ICw=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=
